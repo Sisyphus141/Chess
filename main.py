@@ -1,7 +1,13 @@
-import time
-from cv2 import ROTATE_90_CLOCKWISE
 import pygame
 
+FEN_GAME_START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
+PAWN   = 0
+KNIGHT = 1
+BISH   = 2
+ROOK   = 3
+KING   = 4
+QUEEN  = 5
 
 pygame.init()
 
@@ -14,35 +20,46 @@ square = pygame.image.load("./assets/square.png")
 
 boardcolor = (255, 255, 255)
 
-
-#assigns all images to a sprite to be called later
-blackPawnSprite = pygame.image.load("./assets/black/bp.png")
-blackKnightSprite = pygame.image.load("./assets/black/bk.png")
-blackBishopSprite = pygame.image.load("./assets/black/bb.png")
-blackRookSprite = pygame.image.load("./assets/black/br.png") 
-blackQueenSprite = pygame.image.load("./assets/black/bq.png")
-blackKingSprite = pygame.image.load("./assets/black/bk.png")
-
-whitePawnSprite = pygame.image.load("./assets/white/wp.png")
-whiteKnightSprite = pygame.image.load("./assets/white/wk.png")
-whiteBishopSprite = pygame.image.load("./assets/white/wb.png")
-whiteRookSprite = pygame.image.load("./assets/white/wr.png") 
-whiteQueenSprite = pygame.image.load("./assets/white/wq.png")
-whiteKingSprite = pygame.image.load("./assets/white/wk.png")
-
+SPRITES = {
+    "black" : [
+        pygame.image.load("./assets/black/bp.png"),
+        pygame.image.load("./assets/black/bk.png"),
+        pygame.image.load("./assets/black/bb.png"),
+        pygame.image.load("./assets/black/br.png"), 
+        pygame.image.load("./assets/black/bq.png"),
+        pygame.image.load("./assets/black/bk.png")
+    ],
+    "white" : [
+        pygame.image.load("./assets/white/wp.png"),
+        pygame.image.load("./assets/white/wk.png"),
+        pygame.image.load("./assets/white/wb.png"),
+        pygame.image.load("./assets/white/wr.png"), 
+        pygame.image.load("./assets/white/wq.png"),
+        pygame.image.load("./assets/white/wk.png")
+    ]
+}
 
 #all classes
 
 class piece():
-    def __init__(self, color, name, x, y, locked):
+    def __init__(self, color, name, x, y, locked, *, troop_type=PAWN):
+        ## dynamics of the piece
+        self.troop_type = troop_type
         self.color = color 
         self.name = name
         self.x = x
         self.y = y
+        
+        ## for sanity check later - may
+        self.oldx = self.x
+        self.oldy = self.y
+        
+        ## class properties
+        self.firstMove = True
         self.locked = True
 
-    def lockPos(self):
-        # TODO: check if move is legal if not be angry
+    def lockPos(self) -> None:
+        # TODO: check if move is legal if not be 
         if not self.isLegalMove(): return
         self.locked = True
         difx = (self.x - 25) % 50
@@ -58,106 +75,68 @@ class piece():
     def move(self):
         """ Generic move """
         pos = pygame.mouse.get_pos()
+        self.oldx, self.oldy = self.x, self.y
         self.x, self.y = pos
         self.x -= 25
         self.y -= 25
+            
+    def drawPiece(self) -> None:
+        ## draw the piece
+        screen.blit(SPRITES[self.color][self.troop_type], (self.x, self.y))
 
 class pawn(piece):
     def __init__(self, color, name, x, y, locked):
-        super().__init__(color, name, x, y, locked)
+        super().__init__(color, name, x, y, locked, troop_type=PAWN)
         self.firstMove = True
         self.color = color 
+        
         self.x = x
         self.y = y 
-
-    def drawPiece(self):
-
-        if self.color == ("black"):
-            screen.blit(blackPawnSprite, (self.x, self.y))
-
-        if self.color == ("white"):
-            screen.blit(whitePawnSprite, (self.x, self.y))
-
+        
+    def isLegalMove(self):
+        allowedInc = 25 if not self.firstMove else 50
+        allowedInc *= 1 if self.color == "black" else -1
+        if self.firstMove: self.firstMove = False
+        
+        return True
+    
 class knight(piece):
     def __init__(self, color, name, x, y, locked):
-        super().__init__(color, name, x, y, locked)
+        super().__init__(color, name, x, y, locked, troop_type=KNIGHT)
         self.firstMove = True
         self.color = color 
         self.x = x
         self.y = y 
-
-    def drawPiece(self):
-
-        if self.color == ("black"):
-            screen.blit(blackKnightSprite, (self.x, self.y))
-
-        if self.color == ("white"):
-            screen.blit(whiteKnightSprite, (self.x, self.y))
-
+        
 class bishop(piece):
     def __init__(self, color, name, x, y, locked):
-        super().__init__(color, name, x, y, locked)
+        super().__init__(color, name, x, y, locked, troop_type=BISH)
         self.firstMove = True
         self.color = color 
         self.x = x
         self.y = y 
-
-    def drawPiece(self):
-
-        if self.color == ("black"):
-            screen.blit(blackBishopSprite, (self.x, self.y))
-
-        if self.color == ("white"):
-            screen.blit(whiteBishopSprite, (self.x, self.y))
 
 class rook(piece):
     def __init__(self, color, name, x, y, locked):
-        super().__init__(color, name, x, y, locked)
+        super().__init__(color, name, x, y, locked, troop_type=ROOK)
         self.firstMove = True
         self.color = color 
         self.x = x
         self.y = y 
-
-    def drawPiece(self):
-
-        if self.color == ("black"):
-            screen.blit(blackRookSprite, (self.x, self.y))
-
-        if self.color == ("white"):
-            screen.blit(whiteRookSprite, (self.x, self.y))
-
 class queen(piece):
     def __init__(self, color, name, x, y, locked):
-        super().__init__(color, name, x, y, locked)
+        super().__init__(color, name, x, y, locked, troop_type=QUEEN)
         self.firstMove = True
         self.color = color 
         self.x = x
         self.y = y 
-
-    def drawPiece(self):
-
-        if self.color == ("black"):
-            screen.blit(blackQueenSprite, (self.x, self.y))
-
-        if self.color == ("white"):
-            screen.blit(whiteQueenSprite, (self.x, self.y))
-
 class king(piece):
     def __init__(self, color, name, x, y, locked):
-        super().__init__(color, name, x, y, locked)
+        super().__init__(color, name, x, y, locked, troop_type=KING)
         self.firstMove = True
         self.color = color 
         self.x = x
         self.y = y 
-
-    def drawPiece(self):
-
-        if self.color == ("black"):
-            screen.blit(blackKingSprite, (self.x, self.y))
-
-        if self.color == ("white"):
-            screen.blit(whiteKingSprite, (self.x, self.y))
-
 
 #makes the board, dont ask questions idk what i did lol
 y = 0
@@ -183,56 +162,43 @@ def window():
 window()
 
 loop = True
+currentPlayer = 'w'
 
 #creates all instances of all classes for pieces 
+pieces:list[piece] = []
 
-#setting up black side
-pawn101 = pawn("black", "pawn101", 0, 50, False)
-pawn102 = pawn("black", "pawn102", 50, 50, False)
-pawn103 = pawn("black", "pawn103", 100, 50, False)
-pawn104 = pawn("black", "pawn104", 150, 50, False)
-pawn105 = pawn("black", "pawn105", 200, 50, False)
-pawn106 = pawn("black", "pawn106", 250, 50, False)
-pawn107 = pawn("black", "pawn107", 300, 50, False)
-pawn108 = pawn("black", "pawn108", 350, 50, False)
-rook101 = rook("black", "rook101", 0, 0, False)
-rook102 = rook("black", "rook102", 350, 0, False)
-knight101 = knight("black", "knight101", 50, 0, False)
-knight102 = knight("black", "knight102", 300, 0, False)
-bishop101 = bishop("black", "bishop101", 100, 0, False)
-bishop102 = bishop("black", "bishop102", 250, 0, False)
-queen101 = queen("black", "queen101", 200, 0, False)
-king101 = king("black", "king101", 150, 0, False)
-
-#setting up white side
-pawn201 = pawn("white", "pawn201", 0, 300, False)
-pawn202 = pawn("white", "pawn202", 50, 300, False)
-pawn203 = pawn("white", "pawn203", 100, 300, False)
-pawn204 = pawn("white", "pawn204", 150, 300, False)
-pawn205 = pawn("white", "pawn205", 200, 300, False)
-pawn206 = pawn("white", "pawn206", 250, 300, False)
-pawn207 = pawn("white", "pawn207", 300, 300, False)
-pawn208 = pawn("white", "pawn208", 350, 300, False)
-rook201 = rook("white", "rook201", 0, 350, False)
-rook202 = rook("white", "rook202", 350, 350, False)
-knight201 = knight("white", "knight201", 50, 350, False)
-knight202 = knight("white", "knight202", 300, 350, False)
-bishop201 = bishop("white", "bishop201", 100, 350, False)
-bishop202 = bishop("white", "bishop202", 250, 350, False)
-queen201 = queen("white", "queen201", 200, 350, False)
-king201 = king("white", "king201", 150, 350, False)
+FEN_TYPES = {
+    'p': pawn,
+    'r': rook,
+    'n': knight,
+    'b': bishop,
+    'q': queen,
+    'k': king
+}
 
 #it works... but please make a function to make this cleaner PLEASE
+def renderFEN(fenStr:str) -> list[piece]:
+    board = []
+    location = [0, 0]
+    fenPieces = fenStr.split(" ")[0]
+    for char in fenPieces:
+        if char.isnumeric():
+            location[0] += int(char) * 50
+        
+        elif char == '/':
+            location = [0, location[1] + 50]
+        else:
+            color = "white" if char.isupper() else "black"
+            troop_type = FEN_TYPES[char.lower()]
+            board.append(troop_type(color, f"{color}{char}{location[0]}{location[1]}", location[0], location[1], False))
+            location[0] += 50
+    return board
 
+pieces = renderFEN(FEN_GAME_START)
 
 #list of all the pieces to draw
 
-pieces = [pawn101, pawn102, pawn103, pawn104, pawn105, pawn106, pawn107, pawn108,
-        rook101, knight101, bishop101, queen101, king101, bishop102, knight102, rook102,
-        rook201, knight201, bishop201, queen201, king201, bishop202, knight202, rook202,
-        pawn201, pawn202, pawn203, pawn204, pawn205, pawn206, pawn207, pawn208,]
-
-
+holding = False
 
 while loop:
     events = pygame.event.get()
@@ -249,23 +215,30 @@ while loop:
             pos = pygame.mouse.get_pos()
             mx, my = pos 
             for p in pieces:
-                if mx in range(p.x, (p.x+50)):
-                    if my in range(p.y, p.y+50):
-                        if p.locked == False:
+                if mx in range(p.x, p.x+50) and my in range(p.y, p.y+50):
+                    if p.locked == False:
+                        n = p.name
+                        mx = (mx//50) * 50
+                        my = (my//50) * 50
+                        occupied = False
+                        for i in pieces:
+                            if (locOccupied := (i.x == mx and i.y == my)):
+                                occupied = True
+                            ## i.color != p.color (prevents mutiny)
+                            if (locOccupied) and (i.name != n) and (i.color != p.color):
+                                pieces.remove(i)
+                                p.lockPos()
+                                holding = False
+                                break
+                            
+                        if not occupied:
+                            ## lock the piece (empty space)
                             p.lockPos()
-                            n = p.name
-                            mx = (mx//50) * 50
-                            my = (my//50) * 50
-                            for i in pieces:
-                                if ((i.x == mx) and (i.y == my)):
-                                    if i.name != n: #makes sure u cant eat your own pawn as you move to blank space
-                                            pieces.remove(i)
-                                            break
-
-
-                        else:
-                            p.locked = False
-
+                            holding = False
+                    else:
+                        p.locked = False if not holding else True
+                        holding = True
+ 
 
     window()
 
