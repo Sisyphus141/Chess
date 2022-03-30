@@ -17,7 +17,6 @@ screen = pygame.display.set_mode(res)
 pygame.display.set_caption("Chess")
 square = pygame.image.load("./assets/square.png")
 
-
 boardcolor = (255, 255, 255)
 
 SPRITES = {
