@@ -9,26 +9,26 @@ res = (400, 400)
 
 screen = pygame.display.set_mode(res)
 pygame.display.set_caption("Chess")
-square = pygame.image.load("square.png")
+square = pygame.image.load("./assets/square.png")
 
 
 boardcolor = (255, 255, 255)
 
 
 #assigns all images to a sprite to be called later
-blackPawnSprite = pygame.image.load("bp.png")
-blackKnightSprite = pygame.image.load("bk.png")
-blackBishopSprite = pygame.image.load("bb.png")
-blackRookSprite = pygame.image.load("br.png") 
-blackQueenSprite = pygame.image.load("bq.png")
-blackKingSprite = pygame.image.load("bk.png")
+blackPawnSprite = pygame.image.load("./assets/black/bp.png")
+blackKnightSprite = pygame.image.load("./assets/black/bk.png")
+blackBishopSprite = pygame.image.load("./assets/black/bb.png")
+blackRookSprite = pygame.image.load("./assets/black/br.png") 
+blackQueenSprite = pygame.image.load("./assets/black/bq.png")
+blackKingSprite = pygame.image.load("./assets/black/bk.png")
 
-whitePawnSprite = pygame.image.load("wp.png")
-whiteKnightSprite = pygame.image.load("wk.png")
-whiteBishopSprite = pygame.image.load("wb.png")
-whiteRookSprite = pygame.image.load("wr.png") 
-whiteQueenSprite = pygame.image.load("wq.png")
-whiteKingSprite = pygame.image.load("wk.png")
+whitePawnSprite = pygame.image.load("./assets/white/wp.png")
+whiteKnightSprite = pygame.image.load("./assets/white/wk.png")
+whiteBishopSprite = pygame.image.load("./assets/white/wb.png")
+whiteRookSprite = pygame.image.load("./assets/white/wr.png") 
+whiteQueenSprite = pygame.image.load("./assets/white/wq.png")
+whiteKingSprite = pygame.image.load("./assets/white/wk.png")
 
 
 #all classes
