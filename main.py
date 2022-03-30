@@ -1,5 +1,3 @@
-import time
-from cv2 import ROTATE_90_CLOCKWISE
 import pygame
 
 
