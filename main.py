@@ -11,7 +11,9 @@ ROOK   = 3
 QUEEN  = 4
 KING   = 5
 
-debug = False
+debug = True
+
+
 
 pygame.init()
 
@@ -301,6 +303,17 @@ def window():
 
 window()
 
+
+def debugMode():
+    printBoardASCII(board)
+    for row in board:
+        for p in row:
+            if p is None:
+                print("{0:5}".format("None"), end="")
+                continue
+            print("({0}, {1}){2:5}".format(p.x, p.y, ''), end="")
+        print()
+
 loop = True
 currentPlayer = 'white'
 
@@ -395,6 +408,8 @@ kwargsFunny("hello", "world", a=10, hello="hello world!")
 
 loop = False
 """
+
+
 while loop:
     events = pygame.event.get()
     pygame.display.update()
@@ -470,15 +485,8 @@ while loop:
                 currentPlayer = "white" if currentPlayer == "black" else "black"
                 previous_fens.append(formFEN(board))
                     
-            if debug:
-                printBoardASCII(board)
-                for row in board:
-                    for p in row:
-                        if p is None:
-                            print("{0:5}".format("None"), end="")
-                            continue
-                        print("({0}, {1}){2:5}".format(p.x, p.y, ''), end="")
-                    print()
+            
+            if debug == True: debugMode()
             
     window()
 
@@ -488,6 +496,7 @@ while loop:
                 p.drawPiece()
                 if not p.locked:
                     p.move()
+
 
     pygame.time.wait(0)
     pygame.display.update()
