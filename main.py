@@ -11,7 +11,7 @@ ROOK   = 3
 QUEEN  = 4
 KING   = 5
 
-debug = True
+debug = False
 
 
 
@@ -71,10 +71,6 @@ class piece():
         self.x -= difx - 25
         self.y -= dify - 25
 
-    def isLegalMove(self, **kwargs) -> bool:
-        """ Generic legality check """
-        return True
-
     def move(self):
         """ Generic move """
         pos = pygame.mouse.get_pos()
@@ -97,15 +93,20 @@ class pawn(piece):
         self.y = y 
         
     def isLegalMove(self, **kwargs) -> bool:
-        
-        yAllowed = 1 if not self.firstMove else 2
-        yAllowed *= -1 if self.color == "black" else 1
-
         xAllowed = 1 if kwargs["attack"] else 0
 
-        if self.firstMove:self.firstMove = False
-        
-        
+        if self.color == "white":
+            if self.firstMove == True:
+                yAllowed = 2
+            elif self.firstMove == False:
+                yAllowed = 1
+
+        if self.color == "black":
+            if self.firstMove == True:
+                yAllowed = -2
+            elif self.firstMove == False:
+                yAllowed = -1
+
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
         
@@ -117,17 +118,31 @@ class pawn(piece):
         if self.color == "black":
             if endPos[1] - startPos[1] > yAllowed * -1:
                 return False
-        else:
-            if endPos[1] - startPos[1] > yAllowed:
+        elif self.color == "white":
+            if startPos[1] - endPos[1] > yAllowed:
                 return False
         
+        ##check if its going backwards
+        if self.color == "white":
+            if endPos[1] > startPos[1]:
+                return False
+
+        if self.color == "black":
+            if endPos[1] < startPos[1]:
+                return False
+
         ## if we are attacking a piece we have to be moving diagonally
         if kwargs["attack"]:
             if abs(endPos[0] - startPos[0]) != abs(endPos[1] - startPos[1]):
                 return False
 
+        if self.firstMove: self.firstMove = False
+
+
         return True
-    
+
+
+
 class knight(piece):
     def __init__(self, color, name, x, y, locked):
         super().__init__(color, name, x, y, locked, troop_type=KNIGHT)
@@ -270,7 +285,7 @@ class king(piece):
         self.y = y 
     
     def isLegalMove(self, **kwargs) -> bool:
-
+        
         '''
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
@@ -312,7 +327,10 @@ def debugMode():
                 print("{0:5}".format("None"), end="")
                 continue
             print("({0}, {1}){2:5}".format(p.x, p.y, ''), end="")
-        print()
+    
+
+
+        
 
 loop = True
 currentPlayer = 'white'
@@ -392,9 +410,12 @@ captured:dict[str, list[piece]] = {
 
 #pieces = renderFEN(FEN_GAME_START)
 #pieces = renderFEN('8/2kp1b2/4B1q1/1P1P2R1/3R1NP1/8/3K4/4n2q w - - 0 1')
+
 board, currentPlayer  = renderFEN2D('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w')
+
 print(currentPlayer)
 #list of all the pieces to draw
+
 previous_fens:list[str] = [formFEN(board)]
 held_startPos = (0, 0)
 holding = False
