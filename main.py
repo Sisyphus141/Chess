@@ -83,6 +83,10 @@ class piece():
         ## draw the piece
         screen.blit(SPRITES[self.color][self.troop_type], (self.x, self.y))
 
+
+
+
+##### FIX THE PAWN JUMPING OVER OTHER PIECES
 class pawn(piece):
     def __init__(self, color, name, x, y, locked):
         super().__init__(color, name, x, y, locked, troop_type=PAWN)
@@ -166,8 +170,6 @@ class bishop(piece):
         self.y = y 
 
     def isLegalMove(self, **kwargs) -> bool:
-        return True
-'''
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
         board = kwargs['board']
@@ -183,7 +185,9 @@ class bishop(piece):
             if board[y][x] != None:
                 return False
         return True
-'''
+
+
+
 class rook(piece):
     def __init__(self, color, name, x, y, locked):
         super().__init__(color, name, x, y, locked, troop_type=ROOK)
@@ -193,8 +197,7 @@ class rook(piece):
         self.y = y 
         
     def isLegalMove(self, **kwargs) -> bool:
-        return True
-'''
+        
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
         board = kwargs['board']
@@ -212,7 +215,7 @@ class rook(piece):
             if board[startPos[1]][x] != None:
                 return False
         return True
-'''
+
 
 class queen(piece):
     def __init__(self, color, name, x, y, locked):
@@ -223,8 +226,7 @@ class queen(piece):
         self.y = y 
         
     def isRookLegal(self, **kwargs) -> bool:
-        return True
-        '''
+        
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
         board = kwargs['board']
@@ -242,11 +244,9 @@ class queen(piece):
             if board[startPos[1]][x] != None:
                 return False
         return True
-        '''
 
     def isBishupLegal(self, **kwargs) -> bool:
-        return True
-        '''
+        
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
         board = kwargs['board']
@@ -262,20 +262,24 @@ class queen(piece):
             if board[y][x] != None:
                 return False
         return True
-        '''
+        
 
 
     def isLegalMove(self, **kwargs) -> bool:
         ## TODO: fix this plz lol
-        return True
 
+
+
+
+        return True
         ## check if the move is legal
         #print(self.isRookLegal(**kwargs))
         #print(self.isBishupLegal(**kwargs))
         #if self.isRookLegal(**kwargs) or self.isBishupLegal(**kwargs):
         #    return True
         #return False
-        
+
+
 class king(piece):
     def __init__(self, color, name, x, y, locked):
         super().__init__(color, name, x, y, locked, troop_type=KING)
