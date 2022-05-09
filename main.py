@@ -1,3 +1,9 @@
+##fix the pawn jumping over a piece in first move
+##legal move for king
+##legal move for queen
+##castling 
+
+
 from tkinter import messagebox
 from uuid import uuid4
 import pygame
@@ -162,10 +168,13 @@ class knight(piece):
 
 
         if abs(startPos[0] - endPos[0]) == 1:
-            if abs(startPos[1] - endPos[1] == 2):
+            if abs(startPos[1] - endPos[1]) == 2:
                 return True
-                print(startPos[0], endPos[0])
-        print(startPos, endPos)
+
+        if abs(startPos[0] - endPos[0]) == 2:
+            if abs(startPos[1] - endPos[1]) == 1:
+                return True
+
         return False
 
 
