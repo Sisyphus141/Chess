@@ -122,6 +122,7 @@ class pawn(piece):
         if self.color == "black":
             if endPos[1] - startPos[1] > yAllowed * -1:
                 return False
+
         elif self.color == "white":
             if startPos[1] - endPos[1] > yAllowed:
                 return False
@@ -158,7 +159,15 @@ class knight(piece):
     def isLegalMove(self, **kwargs) -> bool:
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
-        return True
+
+
+        if abs(startPos[0] - endPos[0]) == 1:
+            if abs(startPos[1] - endPos[1] == 2):
+                return True
+                print(startPos[0], endPos[0])
+        print(startPos, endPos)
+        return False
+
 
 
 class bishop(piece):
