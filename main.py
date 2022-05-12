@@ -205,6 +205,9 @@ class bishop(piece):
         return True
 
 
+        ###this is the logic so pieces cant move over one another add to pawn, queen 
+
+
 
 class rook(piece):
     def __init__(self, color, name, x, y, locked):
@@ -285,7 +288,7 @@ class queen(piece):
 
 
     def isLegalMove(self, **kwargs) -> bool:
-        ## TODO: fix this plz lol
+        ## TODO: fix this plz lol queens fucking jumping over pieces fuck.
 
         ##queen legal move
         startPos:tuple[int] = kwargs['start']
@@ -300,12 +303,7 @@ class queen(piece):
             return True
 
         return False
-        ## check if the move is legal
-        #print(self.isRookLegal(**kwargs))
-        #print(self.isBishupLegal(**kwargs))
-        #if self.isRookLegal(**kwargs) or self.isBishupLegal(**kwargs):
-        #    return True
-        #return False
+
 
 
 class king(piece):
