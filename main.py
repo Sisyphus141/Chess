@@ -281,15 +281,25 @@ class queen(piece):
                 return False
         return True
         
+        
 
 
     def isLegalMove(self, **kwargs) -> bool:
         ## TODO: fix this plz lol
 
+        ##queen legal move
+        startPos:tuple[int] = kwargs['start']
+        endPos:tuple[int]   = kwargs['end']
 
 
+        if abs(startPos[0] - endPos[0]) == 0 and abs(startPos[1] - endPos[1]) != 0:
+            return True
 
-        return True
+
+        if abs(startPos[0] - endPos[0]) / abs(startPos[1] - endPos[1]) == 1:
+            return True
+
+        return False
         ## check if the move is legal
         #print(self.isRookLegal(**kwargs))
         #print(self.isBishupLegal(**kwargs))
@@ -307,14 +317,14 @@ class king(piece):
         self.y = y 
     
     def isLegalMove(self, **kwargs) -> bool:
-        
-        '''
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
-        
-        if abs(endPos[0] - startPos[0]) > 1 or abs(endPos[1] - startPos[1]) > 1:
+
+        if abs(startPos[0] - endPos[0]) > 1:
+            return False 
+        if abs(startPos[1] - endPos[1]) > 1:
             return False
-        '''
+
         return True
 
 #makes the board, dont ask questions idk what i did lol
