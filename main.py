@@ -1,9 +1,3 @@
-##fix the pawn jumping over a piece in first move
-##legal move for king
-##legal move for queen
-##castling 
-
-
 from tkinter import messagebox
 from uuid import uuid4
 import pygame
@@ -18,8 +12,6 @@ QUEEN  = 4
 KING   = 5
 
 debug = False
-
-
 
 pygame.init()
 
@@ -50,8 +42,7 @@ SPRITES = {
     ]
 }
 
-#all classes
-
+#$all classes
 class piece():
     def __init__(self, color, name, x, y, locked, *, troop_type=PAWN):
         ## dynamics of the piece
@@ -90,9 +81,7 @@ class piece():
         screen.blit(SPRITES[self.color][self.troop_type], (self.x, self.y))
 
 
-
-
-##### FIX THE PAWN JUMPING OVER OTHER PIECES
+#$ FIX THE PAWN JUMPING OVER OTHER PIECES
 class pawn(piece):
     def __init__(self, color, name, x, y, locked):
         super().__init__(color, name, x, y, locked, troop_type=PAWN)
@@ -119,9 +108,16 @@ class pawn(piece):
 
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
-        
-        ## check if the move is legal
-        ## check if the x is allowed
+        board = kwargs['board']
+
+        for i in (board[0]):
+            if self.color == "white":
+                if (endPos[1] - 1) == None:
+                    return False 
+
+
+        #$ check if the move is legal
+        #$ check if the x is allowed
         if abs(endPos[0] - startPos[0]) != xAllowed:
             return False
         ## check if the y is allowed
@@ -133,7 +129,7 @@ class pawn(piece):
             if startPos[1] - endPos[1] > yAllowed:
                 return False
         
-        ##check if its going backwards
+        ## check if its going backwards
         if self.color == "white":
             if endPos[1] > startPos[1]:
                 return False
@@ -149,10 +145,7 @@ class pawn(piece):
 
         if self.firstMove: self.firstMove = False
 
-
         return True
-
-
 
 class knight(piece):
     def __init__(self, color, name, x, y, locked):
@@ -191,23 +184,19 @@ class bishop(piece):
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
         board = kwargs['board']
-        ## check if the move is legal
-        ## check if the x is allowed
+
+        #$ check if the move is legal
+        #$ check if the x is allowed
         if abs(endPos[0] - startPos[0]) != abs(endPos[1] - startPos[1]):
             return False
         
-        ## check if there is a piece in the way
+        #$ check if there is a piece in the way
         for i in range(1, abs(endPos[0] - startPos[0])):
             y = startPos[1] + i * (endPos[1] - startPos[1]) // abs(endPos[1] - startPos[1])
             x = startPos[0] + i * (endPos[0] - startPos[0]) // abs(endPos[0] - startPos[0])
             if board[y][x] != None:
                 return False
         return True
-
-
-        ###this is the logic so pieces cant move over one another add to pawn, queen 
-
-
 
 class rook(piece):
     def __init__(self, color, name, x, y, locked):
@@ -217,8 +206,7 @@ class rook(piece):
         self.x = x
         self.y = y 
         
-    def isLegalMove(self, **kwargs) -> bool:
-        
+    def isLegalMove(self, **kwargs) -> bool:        
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
         board = kwargs['board']
@@ -230,7 +218,8 @@ class rook(piece):
                 y = startPos[1] + i * (endPos[1] - startPos[1]) // abs(endPos[1] - startPos[1])
                 if board[y][startPos[0]] != None:
                     return False
-        ## check if there is a piece in the way
+
+        #$ check if there is a piece in the way
         for i in range(1, abs(endPos[0] - startPos[0])):
             x = startPos[0] + i * (endPos[0] - startPos[0]) // abs(endPos[0] - startPos[0])
             if board[startPos[1]][x] != None:
@@ -245,65 +234,12 @@ class queen(piece):
         self.color = color 
         self.x = x
         self.y = y 
-        
-    def isRookLegal(self, **kwargs) -> bool:
-        
-        startPos:tuple[int] = kwargs['start']
-        endPos:tuple[int]   = kwargs['end']
-        board = kwargs['board']
-        if abs(endPos[0] - startPos[0]) == abs(endPos[1] - startPos[1]):
-            return False
-        
-        if endPos[0] - startPos[0] == 0:
-            for i in range(1, abs(endPos[1] - startPos[1])):
-                y = startPos[1] + i * (endPos[1] - startPos[1]) // abs(endPos[1] - startPos[1])
-                if board[y][startPos[0]] != None:
-                    return False
-        ## check if there is a piece in the way
-        for i in range(1, abs(endPos[0] - startPos[0])):
-            x = startPos[0] + i * (endPos[0] - startPos[0]) // abs(endPos[0] - startPos[0])
-            if board[startPos[1]][x] != None:
-                return False
-        return True
-
-    def isBishupLegal(self, **kwargs) -> bool:
-        
-        startPos:tuple[int] = kwargs['start']
-        endPos:tuple[int]   = kwargs['end']
-        board = kwargs['board']
-        ## check if the move is legal
-        ## check if the x is allowed
-        if abs(endPos[0] - startPos[0]) != abs(endPos[1] - startPos[1]):
-            return False
-        
-        ## check if there is a piece in the way
-        for i in range(1, abs(endPos[0] - startPos[0])):
-            y = startPos[1] + i * (endPos[1] - startPos[1]) // abs(endPos[1] - startPos[1])
-            x = startPos[0] + i * (endPos[0] - startPos[0]) // abs(endPos[0] - startPos[0])
-            if board[y][x] != None:
-                return False
-        return True
-        
-        
-
 
     def isLegalMove(self, **kwargs) -> bool:
         ## TODO: fix this plz lol queens fucking jumping over pieces fuck.
 
-        ##queen legal move
-        startPos:tuple[int] = kwargs['start']
-        endPos:tuple[int]   = kwargs['end']
 
-
-        if abs(startPos[0] - endPos[0]) == 0 and abs(startPos[1] - endPos[1]) != 0:
-            return True
-
-
-        if abs(startPos[0] - endPos[0]) / abs(startPos[1] - endPos[1]) == 1:
-            return True
-
-        return False
-
+        return True
 
 
 class king(piece):
@@ -325,7 +261,7 @@ class king(piece):
 
         return True
 
-#makes the board, dont ask questions idk what i did lol
+#$ makes the board, dont ask questions idk what i did lol
 y = 0
 def window():
     screen.fill(boardcolor)
@@ -365,7 +301,7 @@ def debugMode():
 loop = True
 currentPlayer = 'white'
 
-#creates all instances of all classes for pieces 
+#$ creates all instances of all classes for pieces 
 FEN_TYPES = {
     'p': pawn,
     'r': rook,
@@ -375,7 +311,7 @@ FEN_TYPES = {
     'k': king
 }
 
-#it works... but please make a function to make this cleaner PLEASE
+#$ it works... but please make a function to make this cleaner PLEASE
 
 def printBoardASCII(board:list[list[piece]]) -> None:
     for row in board:
@@ -438,28 +374,15 @@ captured:dict[str, list[piece]] = {
     "black": []
 }
 
-#pieces = renderFEN(FEN_GAME_START)
-#pieces = renderFEN('8/2kp1b2/4B1q1/1P1P2R1/3R1NP1/8/3K4/4n2q w - - 0 1')
-
 board, currentPlayer  = renderFEN2D('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w')
 
 print(currentPlayer)
-#list of all the pieces to draw
+##list of all the pieces to draw
 
 previous_fens:list[str] = [formFEN(board)]
 held_startPos = (0, 0)
 holding = False
 selected = None
-"""
-def kwargsFunny(*args, **kwargs):
-    print(args)
-    print(kwargs)
-
-kwargsFunny("hello", "world", a=10, hello="hello world!")
-
-loop = False
-"""
-
 
 while loop:
     events = pygame.event.get()
@@ -489,7 +412,7 @@ while loop:
             if event.key == pygame.K_ESCAPE:
                 loop = not messagebox.askyesno("Quit", "Are you sure you want to quit?")
                 
-        #check for click here
+        #$ check for click here
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             mx, my = pos 
@@ -556,4 +479,3 @@ pygame.image.save(screen, f"{uuid}.png")
 
 with open(uuid + ".fens", 'w+') as f:
     f.write('\n'.join(previous_fens))
-
