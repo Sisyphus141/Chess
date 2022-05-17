@@ -17,7 +17,7 @@ ROOK   = 3
 QUEEN  = 4
 KING   = 5
 
-debug = False
+debug = True
 
 
 
@@ -28,6 +28,7 @@ res = (400, 400)
 screen = pygame.display.set_mode(res)
 pygame.display.set_caption("Chess")
 square = pygame.image.load("./assets/square.png")
+SSquarePng = pygame.image.load("./assets/square.png")
 
 boardcolor = (255, 255, 255)
 
@@ -143,14 +144,19 @@ class pawn(piece):
             if endPos[1] < startPos[1]:
                 return False
 
-        if yAllowed == 2:
-            if self.color == "white":
-                if board[(startPos[0]+1)][startPos[1]] != None:
-                    return False
 
-            if self.color == "black":
-                if board[(startPos[0]-1)][startPos[1]] != None:
-                    return False
+        if yAllowed == 2:
+            if board[(startPos[0])]   [startPos[1]-1] != None:
+                return False
+
+
+        if yAllowed == -2:
+            if board[(startPos[0])][startPos[1]+1] != None:
+                return False
+
+
+
+
 
 
         ## if we are attacking a piece we have to be moving diagonally
@@ -364,6 +370,13 @@ def debugMode():
                 print("{0:5}".format("None"), end="")
                 continue
             print("({0}, {1}){2:5}".format(p.x, p.y, ''), end="")
+    if selected:
+        if selected.isLegalMove(if board[my][mx] is not None else False, start=held_startPos, end=(mx, my), board=board):
+            pygame.draw()
+
+
+
+    
     
 
 
