@@ -108,7 +108,7 @@ class pawn(piece):
 
 
     def isLegalMove(self, **kwargs) -> bool:
-        
+
         xAllowed = 1 if kwargs["attack"] else 0
 
         if self.color == "white":
@@ -205,23 +205,14 @@ class bishop(piece):
         board = kwargs['board']
         ## check if the move is legal
         ## check if the x is allowed
-        #if abs(startPos[0] - startPos[1]) // abs(endPos[0] -endPos[1]):
-        #    return False 
-
-        if abs(startPos[0] // startPos[1]) != 0:
-            print(startPos[0] // startPos[1])
+        if abs(endPos[0] - startPos[0]) != abs(endPos[1] - startPos[1]):
             return False
-
-
-
-
-
+        
         ## check if there is a piece in the way
         for i in range(1, abs(endPos[0] - startPos[0])):
             y = startPos[1] + i * (endPos[1] - startPos[1]) // abs(endPos[1] - startPos[1])
             x = startPos[0] + i * (endPos[0] - startPos[0]) // abs(endPos[0] - startPos[0])
-
-            if board[y-1][x] != None:
+            if board[y][x] != None:
                 return False
         return True
 
