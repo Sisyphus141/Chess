@@ -105,8 +105,10 @@ class pawn(piece):
         
         self.x = x
         self.y = y 
-        
+
+
     def isLegalMove(self, **kwargs) -> bool:
+        
         xAllowed = 1 if kwargs["attack"] else 0
 
         if self.color == "white":
@@ -164,9 +166,7 @@ class pawn(piece):
 
         if self.firstMove: self.firstMove = False
 
-
         return True
-
 
 
 class knight(piece):
@@ -578,9 +578,9 @@ while loop:
                 p.drawPiece()
                 if not p.locked:
                     p.move()
-            if selected:
-                if selected.isLegalMove(attack=False, start=held_startPos, end=(x+25,y+25), board=board):
-                    pygame.draw.rect(screen, (0,255,0), (25,25))
+            #if selected:
+                #if selected.isLegalMove(attack=False, start=held_startPos, end=(x+25,y+25), board=board):
+                    #pygame.draw.rect(screen, (0,255,0), (25,25))
 
 
 
