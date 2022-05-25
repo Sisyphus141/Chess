@@ -4,7 +4,10 @@
 ##castling 
 
 
+from logging import raiseExceptions
 from tkinter import messagebox
+from tokenize import endpats
+from tracemalloc import start
 from uuid import uuid4
 import pygame
 
@@ -17,7 +20,7 @@ ROOK   = 3
 QUEEN  = 4
 KING   = 5
 
-debug = True
+debug = False
 
 
 
@@ -112,7 +115,7 @@ class pawn(piece):
             elif self.firstMove == False:
                 yAllowed = 1
 
-        if self.color == "black":
+        if self.color == "black":   
             if self.firstMove == True:
                 yAllowed = -2
             elif self.firstMove == False:
@@ -146,19 +149,14 @@ class pawn(piece):
 
 
         if yAllowed == 2:
-            if board[(startPos[0])]   [startPos[1]-1] != None:
+            if board[startPos[1]-1][startPos[0]] != None:
+                print(board[(startPos[0])][startPos[1]-1].color)
+                print(startPos, endPos)
                 return False
-
 
         if yAllowed == -2:
-            if board[(startPos[0])][startPos[1]+1] != None:
+            if board[startPos[1]+1][startPos[0]] != None:
                 return False
-
-
-
-
-
-
         ## if we are attacking a piece we have to be moving diagonally
         if kwargs["attack"]:
             if abs(endPos[0] - startPos[0]) != abs(endPos[1] - startPos[1]):
@@ -183,7 +181,6 @@ class knight(piece):
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
 
-
         if abs(startPos[0] - endPos[0]) == 1:
             if abs(startPos[1] - endPos[1]) == 2:
                 return True
@@ -193,8 +190,6 @@ class knight(piece):
                 return True
 
         return False
-
-
 
 class bishop(piece):
     def __init__(self, color, name, x, y, locked):
@@ -210,14 +205,23 @@ class bishop(piece):
         board = kwargs['board']
         ## check if the move is legal
         ## check if the x is allowed
-        if abs(endPos[0] - startPos[0]) != abs(endPos[1] - startPos[1]):
+        #if abs(startPos[0] - startPos[1]) // abs(endPos[0] -endPos[1]):
+        #    return False 
+
+        if abs(startPos[0] // startPos[1]) != 0:
+            print(startPos[0] // startPos[1])
             return False
-        
+
+
+
+
+
         ## check if there is a piece in the way
         for i in range(1, abs(endPos[0] - startPos[0])):
             y = startPos[1] + i * (endPos[1] - startPos[1]) // abs(endPos[1] - startPos[1])
             x = startPos[0] + i * (endPos[0] - startPos[0]) // abs(endPos[0] - startPos[0])
-            if board[y][x] != None:
+
+            if board[y-1][x] != None:
                 return False
         return True
 
@@ -363,6 +367,7 @@ window()
 
 
 def debugMode():
+    
     printBoardASCII(board)
     for row in board:
         for p in row:
@@ -370,17 +375,25 @@ def debugMode():
                 print("{0:5}".format("None"), end="")
                 continue
             print("({0}, {1}){2:5}".format(p.x, p.y, ''), end="")
-    if selected:
-        if selected.isLegalMove(if board[my][mx] is not None else False, start=held_startPos, end=(mx, my), board=board):
-            pygame.draw()
-
-
-
-    
     
 
 
-        
+    for row in board:
+        for column in board:
+
+            screen.blit(SSquarePng, (20, 20))
+
+
+
+            #if board[row] != None:
+            #    if selected.isLegalMove():
+            #        screen.blit((row, column))
+
+
+
+
+
+
 
 loop = True
 currentPlayer = 'white'
@@ -462,8 +475,6 @@ captured:dict[str, list[piece]] = {
 #pieces = renderFEN('8/2kp1b2/4B1q1/1P1P2R1/3R1NP1/8/3K4/4n2q w - - 0 1')
 
 board, currentPlayer  = renderFEN2D('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w')
-
-print(currentPlayer)
 #list of all the pieces to draw
 
 previous_fens:list[str] = [formFEN(board)]
@@ -530,8 +541,8 @@ while loop:
                     
                 if board[my][mx] != None and board[my][mx].color == currentPlayer:
                     continue
-                
                 if not selected.isLegalMove(attack=True if board[my][mx] is not None else False, start=held_startPos, end=(mx, my), board=board):
+                    ##print(held_startPos, (mx,my))
                     messagebox.showerror("Error", "Illegal move")
                     break
                 
@@ -557,16 +568,20 @@ while loop:
                 previous_fens.append(formFEN(board))
                     
             
-            if debug == True: debugMode()
             
     window()
+    #if debug == True: debugMode()
 
-    for row in board:
-        for p in row:
+    for x,row in enumerate(board):
+        for y,p in enumerate(row):
             if p is not None:
                 p.drawPiece()
                 if not p.locked:
                     p.move()
+            if selected:
+                if selected.isLegalMove(attack=False, start=held_startPos, end=(x+25,y+25), board=board):
+                    pygame.draw.rect(screen, (0,255,0), (25,25))
+
 
 
     pygame.time.wait(0)
