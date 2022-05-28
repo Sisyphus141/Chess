@@ -235,6 +235,11 @@ class rook(piece):
         if abs(endPos[0] - startPos[0]) == abs(endPos[1] - startPos[1]):
             return False
         
+
+        if self.firstMove == True:
+            return True
+
+
         if endPos[0] - startPos[0] == 0:
             for i in range(1, abs(endPos[1] - startPos[1])):
                 y = startPos[1] + i * (endPos[1] - startPos[1]) // abs(endPos[1] - startPos[1])
@@ -245,6 +250,8 @@ class rook(piece):
             x = startPos[0] + i * (endPos[0] - startPos[0]) // abs(endPos[0] - startPos[0])
             if board[startPos[1]][x] != None:
                 return False
+
+        if self.firstMove: self.firstMove = False
         return True
 
 
@@ -269,6 +276,7 @@ class queen(piece):
                 y = startPos[1] + i * (endPos[1] - startPos[1]) // abs(endPos[1] - startPos[1])
                 if board[y][startPos[0]] != None:
                     return False
+
         ## check if there is a piece in the way
         for i in range(1, abs(endPos[0] - startPos[0])):
             x = startPos[0] + i * (endPos[0] - startPos[0]) // abs(endPos[0] - startPos[0])
@@ -298,8 +306,6 @@ class queen(piece):
 
 
     def isLegalMove(self, **kwargs) -> bool:
-        ## TODO: fix this plz lol queens fucking jumping over pieces fuck.
-
         ##queen legal move
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
@@ -325,13 +331,52 @@ class king(piece):
     def isLegalMove(self, **kwargs) -> bool:
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
+        board = kwargs["board"]
+
+        # check if the king moves two spaces to the left or right
+        if self.color == "white":
+            if self.firstMove == True:
+                if endPos[0] - startPos[0] == 2:
+                    board[7][7] = None
+                    #tempFEN += rook("white", "R200", 5, 7, False)
+                    if self.firstMove: self.firstMove = False
+                    return True
+
+                if endPos[0] - startPos[0] == -2:
+                    if board[7][1] == None: #checks if the knight is in the way when moving to the left
+                        board[7][0] = None
+                        #tempFEN += rook("white", "R200", 5, 7, False)
+                        if self.firstMove: self.firstMove = False
+                        return True
+
+
+        if self.color == "black":
+            if self.firstMove == True:
+                if endPos[0] - startPos[0] == 2:
+                    board[7][1] = None
+                    #tempFEN += rook("black", "R200", 5, 7, False)
+                    if self.firstMove: self.firstMove = False
+                    return True
+
+                if endPos[0] - startPos[0] == -2:
+                    if board[0][1] == None: #checks if the knight is in the way when moving to the left
+                        board[0][0] = None
+                        #tempFEN += rook("black", "R200", 5, 7, False)
+                        if self.firstMove: self.firstMove = False
+                        return True
 
         if abs(startPos[0] - endPos[0]) > 1:
             return False 
         if abs(startPos[1] - endPos[1]) > 1:
             return False
 
+
+        if self.firstMove: self.firstMove = False
         return True
+
+
+
+
 
 #makes the board, dont ask questions idk what i did lol
 y = 0
@@ -515,6 +560,7 @@ while loop:
                     selected = board[my][mx]
                     selected.locked = False
                     held_startPos = (mx, my)
+                    print(my, mx)
             elif holding:
                 if board[my][mx] == selected:
                     holding = False
