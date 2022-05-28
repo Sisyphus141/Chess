@@ -369,21 +369,12 @@ def debugMode():
     
 
 
-    for row in board:
-        for column in board:
+    if selected:
+        for row in board:
+            for column in board:
+                selected.isLegalMove()
 
-            screen.blit(SSquarePng, (20, 20))
-
-
-
-            #if board[row] != None:
-            #    if selected.isLegalMove():
-            #        screen.blit((row, column))
-
-
-
-
-
+    #get selected/holding >> pass it through all possible positions(x, y) print out the positions where it returns true
 
 
 loop = True
@@ -514,7 +505,7 @@ while loop:
         #check for click here
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
-            mx, my = pos 
+            mx, my = pos
             mx = mx // 50
             my = my // 50
             ## check if the player is holding a piece
@@ -558,10 +549,9 @@ while loop:
                 currentPlayer = "white" if currentPlayer == "black" else "black"
                 previous_fens.append(formFEN(board))
                     
-            
-            
     window()
-    #if debug == True: debugMode()
+    
+    if debug == True: debugMode()
 
     for x,row in enumerate(board):
         for y,p in enumerate(row):
@@ -569,9 +559,7 @@ while loop:
                 p.drawPiece()
                 if not p.locked:
                     p.move()
-            #if selected:
-                #if selected.isLegalMove(attack=False, start=held_startPos, end=(x+25,y+25), board=board):
-                    #pygame.draw.rect(screen, (0,255,0), (25,25))
+
 
 
 
