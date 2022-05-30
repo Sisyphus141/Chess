@@ -337,33 +337,36 @@ class king(piece):
         if self.color == "white":
             if self.firstMove == True:
                 if endPos[0] - startPos[0] == 2:
-                    board[7][7] = None
-                    #tempFEN += rook("white", "R200", 5, 7, False)
+                    board[7][7].x = 250
+
                     if self.firstMove: self.firstMove = False
                     return True
 
                 if endPos[0] - startPos[0] == -2:
                     if board[7][1] == None: #checks if the knight is in the way when moving to the left
-                        board[7][0] = None
-                        #tempFEN += rook("white", "R200", 5, 7, False)
+                        board[7][0].x = 150
+
                         if self.firstMove: self.firstMove = False
                         return True
+
+
 
 
         if self.color == "black":
             if self.firstMove == True:
                 if endPos[0] - startPos[0] == 2:
-                    board[7][1] = None
-                    #tempFEN += rook("black", "R200", 5, 7, False)
+                    board[0][7].x = 250
+
                     if self.firstMove: self.firstMove = False
                     return True
 
                 if endPos[0] - startPos[0] == -2:
                     if board[0][1] == None: #checks if the knight is in the way when moving to the left
-                        board[0][0] = None
-                        #tempFEN += rook("black", "R200", 5, 7, False)
+                        board[0][0].x = 150
+
                         if self.firstMove: self.firstMove = False
                         return True
+
 
         if abs(startPos[0] - endPos[0]) > 1:
             return False 
