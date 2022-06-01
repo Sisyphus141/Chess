@@ -214,6 +214,9 @@ class bishop(piece):
             x = startPos[0] + i * (endPos[0] - startPos[0]) // abs(endPos[0] - startPos[0])
             if board[y][x] != None:
                 return False
+
+
+        if self.firstMove: self.firstMove = False
         return True
 
 
@@ -235,23 +238,17 @@ class rook(piece):
         if abs(endPos[0] - startPos[0]) == abs(endPos[1] - startPos[1]):
             return False
         
-
-        if self.firstMove == True:
-            return True
-
-
         if endPos[0] - startPos[0] == 0:
             for i in range(1, abs(endPos[1] - startPos[1])):
                 y = startPos[1] + i * (endPos[1] - startPos[1]) // abs(endPos[1] - startPos[1])
                 if board[y][startPos[0]] != None:
                     return False
+
         ## check if there is a piece in the way
         for i in range(1, abs(endPos[0] - startPos[0])):
             x = startPos[0] + i * (endPos[0] - startPos[0]) // abs(endPos[0] - startPos[0])
             if board[startPos[1]][x] != None:
                 return False
-
-        if self.firstMove: self.firstMove = False
         return True
 
 
@@ -332,19 +329,22 @@ class king(piece):
         startPos:tuple[int] = kwargs['start']
         endPos:tuple[int]   = kwargs['end']
         board = kwargs["board"]
-
+        
         # check if the king moves two spaces to the left or right
         if self.color == "white":
             if self.firstMove == True:
                 if endPos[0] - startPos[0] == 2:
+                    #change board[7][7].x to 50
+                    print(board[7][7].x)
                     board[7][7].x = 250
 
+                    
                     if self.firstMove: self.firstMove = False
                     return True
 
                 if endPos[0] - startPos[0] == -2:
                     if board[7][1] == None: #checks if the knight is in the way when moving to the left
-                        board[7][0].x = 150
+                        board[7][0].x =150
 
                         if self.firstMove: self.firstMove = False
                         return True
@@ -366,7 +366,7 @@ class king(piece):
 
                         if self.firstMove: self.firstMove = False
                         return True
-
+        
 
         if abs(startPos[0] - endPos[0]) > 1:
             return False 
@@ -503,7 +503,7 @@ captured:dict[str, list[piece]] = {
 
 #pieces = renderFEN(FEN_GAME_START)
 #pieces = renderFEN('8/2kp1b2/4B1q1/1P1P2R1/3R1NP1/8/3K4/4n2q w - - 0 1')
-
+#rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w
 board, currentPlayer  = renderFEN2D('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w')
 #list of all the pieces to draw
 
