@@ -1,9 +1,3 @@
-##fix the pawn jumping over a piece in first move
-##legal move for king
-##legal move for queen
-##castling 
-
-
 from logging import raiseExceptions
 from tkinter import messagebox
 from tokenize import endpats
@@ -504,7 +498,7 @@ captured:dict[str, list[piece]] = {
 #pieces = renderFEN(FEN_GAME_START)
 #pieces = renderFEN('8/2kp1b2/4B1q1/1P1P2R1/3R1NP1/8/3K4/4n2q w - - 0 1')
 #rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w
-board, currentPlayer  = renderFEN2D('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w')
+board, currentPlayer  = renderFEN2D('r1bqkb1r/p1pppp1p/1p6/3n2p1/3P4/4P3/PP1B1PPP/RNQ1KBNR w')
 #list of all the pieces to draw
 
 previous_fens:list[str] = [formFEN(board)]
